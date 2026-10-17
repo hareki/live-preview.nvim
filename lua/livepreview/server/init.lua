@@ -168,8 +168,13 @@ end
 --- @param port number: port to bind to
 --- @param opts ServerStartOptions: a table with the following fields
 --- 	- on_events (table<string, function(client:userdata, data:{filename: string, events: FsEvent}):void>)
+--- @return integer? ok: 0 once listening, nil when the port can't be bound
+--- @return string? err
 function Server:start(ip, port, opts)
-	self.server:bind(ip, port)
+	local ok, err = self.server:bind(ip, port)
+	if not ok then
+		return nil, err
+	end
 	local on_events = opts.on_events
 	if on_events then
 		if on_events.LivePreviewDirChanged then
@@ -200,7 +205,8 @@ function Server:start(ip, port, opts)
 		end
 	end
 
-	self.server:listen(128, function(err)
+	-- libuv defers bind()'s EADDRINUSE to listen()
+	ok, err = self.server:listen(128, function(err)
 		--- Connect to client
 		local client = uv.new_tcp()
 		self.server:accept(client)
@@ -234,6 +240,7 @@ function Server:start(ip, port, opts)
 			end
 		end)
 	end)
+	return ok, err
 end
 
 --- Stop the server
