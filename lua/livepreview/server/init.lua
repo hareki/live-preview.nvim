@@ -96,7 +96,7 @@ function Server:new(webroot)
 			callback = function()
 				need_scroll = true
 				filepath = api.nvim_buf_get_name(0)
-				if #M.connecting_clients then
+				if #M.connecting_clients > 0 then
 					send_scroll()
 				end
 			end,
