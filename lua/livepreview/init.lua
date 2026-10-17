@@ -66,7 +66,7 @@ function M.start(filepath, port)
 		server.websocket.send_json(client, message)
 	end
 
-	M.serverObj:start(config.config.address, port, {
+	local ok, err = M.serverObj:start(config.config.address, port, {
 		on_events = utils.supported_filetype(filepath) == "html" and {
 			---@param client uv_tcp_t
 			---@param data {filename: string, event: FsEvent}
@@ -82,6 +82,14 @@ function M.start(filepath, port)
 			TextChangedI = vim.schedule_wrap(onTextChanged),
 		},
 	})
+	if not ok then
+		vim.notify(
+			("live-preview.nvim: Failed to listen on %s:%d: %s"):format(config.config.address, port, err),
+			vim.log.levels.ERROR
+		)
+		M.close()
+		return false
+	end
 
 	return true
 end
