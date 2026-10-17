@@ -52,7 +52,10 @@ function M.start(filepath, port)
 	end
 	M.close()
 
-	M.serverObj = server.Server:new(config.config.dynamic_root and vim.fs.dirname(filepath) or nil)
+	-- A file outside the cwd has no URL path under it, so it's served from its own directory, as
+	-- dynamic_root serves every file
+	local outside_cwd = not utils.get_relative_path(filepath, vim.uv.cwd() or "")
+	M.serverObj = server.Server:new((config.config.dynamic_root or outside_cwd) and vim.fs.dirname(filepath) or nil)
 	local function onTextChanged(client)
 		local bufname = vim.api.nvim_buf_get_name(0)
 		if not utils.supported_filetype(bufname) or utils.supported_filetype(bufname) == "html" then
