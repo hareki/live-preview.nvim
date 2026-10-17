@@ -92,6 +92,7 @@ function Server:new(webroot)
 			"CursorMoved",
 			"CursorMovedI",
 		}, {
+			group = "LivePreview",
 			callback = function()
 				need_scroll = true
 				filepath = api.nvim_buf_get_name(0)
