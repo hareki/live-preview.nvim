@@ -63,12 +63,12 @@ api.nvim_create_user_command(cmd, function(cmd_opts)
 			or utils.get_relative_path(filepath, fs.normalize(vim.uv.cwd() or ""))
 			or fs.basename(filepath)
 		local urlpath_encoded = urlpath and vim.uri_encode(urlpath)
-		local url = ("http://%s:%d/%s"):format(Config.address, Config.port, urlpath_encoded)
-		print("live-preview.nvim: Opening browser at " .. url)
+		local url = ("http://%s:%d/%s"):format(utils.url_host(Config.address), Config.port, urlpath_encoded)
+		print("Opening preview at " .. url)
 		utils.open_browser(url, Config.browser)
 	elseif subcommand == "close" then
 		lp.close()
-		print("Live preview stopped")
+		print("Live Preview stopped")
 	elseif subcommand == "pick" then
 		lp.pick()
 	else

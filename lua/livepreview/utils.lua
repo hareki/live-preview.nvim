@@ -276,6 +276,14 @@ function M.open_browser(path, browser)
 	end
 end
 
+--- Host to open previews at: `localhost` for the default `127.0.0.1`, which stays the bind address
+--- since libuv only binds IP addresses
+--- @param address string: address the server is bound to
+--- @return string
+function M.url_host(address)
+	return address == "127.0.0.1" and "localhost" or address
+end
+
 --- Get a list of processes listening on a port
 --- @param port number
 --- @return {name : string, pid : number}[]|{}: a table with the processes listening on the port (except for the current process), including name and PID

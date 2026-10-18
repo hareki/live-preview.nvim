@@ -11,9 +11,7 @@ M.serverObj = nil
 --- Stop live-preview server
 function M.close()
 	if M.serverObj then
-		M.serverObj:stop(function()
-			print("live-preview.nvim: Server closed")
-		end)
+		M.serverObj:stop()
 		M.serverObj = nil
 	end
 end
@@ -111,7 +109,7 @@ function M.pick()
 		utils.open_browser(
 			string.format(
 				"http://%s:%d/%s",
-				config.config.address,
+				utils.url_host(config.config.address),
 				config.config.port,
 				config.config.dynamic_root and vim.fs.basename(filepath) or filepath
 			),
